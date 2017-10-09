@@ -1,18 +1,18 @@
-// import { Input, Button, ButtonState } from '.'
-// import { Vector2 } from '../util/index'
-// import { Game } from '../Game'
 namespace Phoenix {
   export class Mouse extends Input<Button> {
 
     public scrollDirection: number
     public static instance: Mouse
     private static mousePosition: Vector2
+    private game: Game
 
     public static get position(): Vector2 { return this.mousePosition }
 
-    public constructor(canvas: HTMLCanvasElement) {
+    public constructor(game: Game) {
       if (Mouse.instance) return
       super()
+      this.game = game
+      let canvas: HTMLCanvasElement = game.app.view
       Mouse.instance = this
       this._generateButtonMap()
 
@@ -46,7 +46,7 @@ namespace Phoenix {
       })
 
       canvas.addEventListener('mousemove', e => {
-        let rect = Game.app.view.getBoundingClientRect()
+        let rect = this.game.app.view.getBoundingClientRect()
         Mouse.mousePosition = new Vector2(e.clientX - rect.left, e.clientY - rect.top)
       })
 

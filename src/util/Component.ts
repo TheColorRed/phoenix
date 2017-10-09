@@ -13,6 +13,7 @@ namespace Phoenix {
       super()
       this.gameObject = gameObject
       this['_transform'] = gameObject.transform
+      this['_game'] = this.gameObject.game
     }
 
   }

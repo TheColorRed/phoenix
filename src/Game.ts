@@ -10,32 +10,36 @@ namespace Phoenix {
 
     private gameStarter: Function
     private gamePreloader: Function
-    private static _app: PIXI.Application
-    private static _physics: Matter.Engine
-    private static _assets: Asset<any>[] = []
+    private _app: PIXI.Application
+    private _physics: Matter.Engine
+    private _assets: Asset<any>[] = []
     private _gameObjects: GameObject[] = []
     private toLoad: number = 0
 
-    public static get app(): PIXI.Application { return this._app }
-    public static get physics(): Matter.Engine { return this._physics }
+    public get app(): PIXI.Application { return this._app }
+    public get physicsEngine(): Matter.Engine { return this._physics }
 
     public constructor(container: string | HTMLElement, width?: number, height?: number) {
       if (typeof container == 'string') {
         container = document.querySelector(container) as HTMLElement
       }
       if (container instanceof HTMLElement) {
-        Game._app = new PIXI.Application({ width: width || container.clientWidth, height: height || container.clientHeight })
-        container.appendChild(Game.app.view)
-        Game.app.view.addEventListener('contextmenu', e => e.preventDefault())
+        this._app = new PIXI.Application({ width: width || container.clientWidth, height: height || container.clientHeight })
+        container.appendChild(this.app.view)
+        this.app.view.addEventListener('contextmenu', e => e.preventDefault())
       }
-      new Keyboard(Game.app.view)
-      new Mouse(Game.app.view)
+      new Keyboard(this)
+      new Mouse(this)
       this.startPhysicsEngine()
     }
 
     public startPhysicsEngine() {
-      Game._physics = Matter.Engine.create()
-      Matter.Engine.run(Game._physics)
+      this._physics = Matter.Engine.create(undefined, {
+        positionIterations: 10,
+        velocityIterations: 10
+      })
+      // Game._physics.positionIterations = 10
+      Matter.Engine.run(this._physics)
     }
 
     public loadImage(name: string, value: string) {
@@ -56,7 +60,7 @@ namespace Phoenix {
         this.gamePreloader()
         PIXI.loader.load((loader: PIXI.loaders.Loader, resources: PIXI.loaders.Resource) => {
           for (let name in resources) {
-            Game._assets.push({
+            this._assets.push({
               name: name,
               type: AssetType.Image,
               data: new PIXI.Sprite((<any>resources)[name].texture)
@@ -86,13 +90,15 @@ namespace Phoenix {
 
     public instantiate(assetKey: string, position?: Vector2) {
       let go = new GameObject
-      go.sprite = Sprite.create(assetKey)
+      go['_game'] = this
+      // let renderer = go.addComponent(SpriteRenderer)
+      // renderer.sprite = Sprite.create(assetKey)
       if (position) {
         go.transform.position = position
       } else {
-        go.transform.position = new Vector2(Game.app.renderer.width / 2, Game.app.renderer.height / 2)
+        go.transform.position = new Vector2(this.app.renderer.width / 2, this.app.renderer.height / 2)
       }
-      Game.app.stage.addChild(go.sprite.sprite)
+      // this.app.stage.addChild(renderer.getDisplayObject)
       this._gameObjects.push(go)
       return go
     }
@@ -105,18 +111,8 @@ namespace Phoenix {
       requestAnimationFrame(this.mainLoop.bind(this))
     }
 
-    public static destroy(item: Object, delay: number = 0) {
-      setTimeout(() => {
-        if (item instanceof GameObject) {
-
-        } else if (item instanceof Component) {
-
-        }
-      }, delay)
-    }
-
     private startRenderer() {
-      Game.app.ticker.add(() => {
+      this.app.ticker.add(() => {
         for (let i = 0, l = this._gameObjects.length; i < l; i++) {
           let go = this._gameObjects[i]
           for (let i = 0, l = go['_components'].length; i < l; i++) {
@@ -147,7 +143,7 @@ namespace Phoenix {
       })
     }
 
-    public static getAsset(key: string) {
+    public getAsset(key: string) {
       for (let i = 0; i < this._assets.length; i++) {
         if (this._assets[i].name == key) {
           return this._assets[i]

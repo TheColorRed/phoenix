@@ -1,30 +1,32 @@
 namespace Phoenix {
   export class Transform extends Component {
 
+    private _position: Vector2 = Vector2.zero
+    private _rotation: number = 0
+
     public set position(value: Vector2) {
-      this.gameObject.sprite.sprite.x = value.x
-      this.gameObject.sprite.sprite.y = value.y
+      this._position = value
     }
 
     public get position(): Vector2 {
-      let pos = this.gameObject.sprite.sprite.getGlobalPosition()
-      return new Vector2(pos.x, pos.y)
+      return this._position
     }
+
     public get localPosition(): Vector2 {
-      return new Vector2(this.gameObject.sprite.sprite.x, this.gameObject.sprite.sprite.y)
+      return this.position
     }
 
     public set rotation(value: number) {
-      this.gameObject.sprite.sprite.rotation = value
+      this._rotation = value
     }
 
     public get rotation(): number {
-      return this.gameObject.sprite.sprite.rotation
+      return this._rotation
     }
 
     public translate(position: Vector2) {
-      this.gameObject.sprite.sprite.x += position.x
-      this.gameObject.sprite.sprite.y += position.y
+      this.gameObject.sprite.displayObject.x += position.x
+      this.gameObject.sprite.displayObject.y += position.y
     }
 
   }

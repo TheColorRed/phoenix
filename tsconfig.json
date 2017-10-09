@@ -7,14 +7,16 @@
     "outFile": "./dist/phoenix.js",
     "removeComments": true,
     "allowJs": true,
-    "newLine": "LF"
-    // "listFiles": true
+    "newLine": "LF",
+    "baseUrl": "."
   },
   "include": [
     "node_modules/pixi.js/dist/pixi.min.js",
+    // "node_modules/pixi-display/bin/pixi-display.js",
     "node_modules/matter-js/build/matter.min.js"
   ],
   "files": [
+    // "./node_modules/pixi-display/bin/pixi-display.d.ts",
     // Import the utilities
     "./src/util/Object.ts",
     "./src/util/Clamp.ts",
@@ -29,7 +31,9 @@
     "./src/util/input/Keyboard.ts",
     "./src/util/input/Mouse.ts",
     // Import the components
+    "./src/components/SpriteRenderer.ts",
     "./src/components/RectangleCollider.ts",
+    "./src/components/CircleCollider.ts",
     "./src/components/Rigidbody.ts",
     "./src/components/Transform.ts",
     // Import the main game
