@@ -1,16 +1,19 @@
-import { GameObject } from './index'
-import { Transform } from '../components/index'
+namespace Phoenix {
 
-export interface ComponentType<T extends Component> {
-  new(gameObject: GameObject): T;
-}
+  export interface ComponentType<T extends Component> {
+    new(gameObject: GameObject): T;
+  }
 
-export class Component {
-  protected gameObject: GameObject
-  protected transform: Transform
+  export class Component extends Object {
 
-  public constructor(gameObject: GameObject) {
-    this.gameObject = gameObject
-    this.transform = gameObject.transform
+    private runStart: boolean = false
+    private runAwake: boolean = false
+
+    public constructor(gameObject: GameObject) {
+      super()
+      this.gameObject = gameObject
+      this['_transform'] = gameObject.transform
+    }
+
   }
 }

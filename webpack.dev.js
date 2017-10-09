@@ -2,6 +2,7 @@ const path = require('path')
 
 module.exports = {
   entry: './src/index.ts',
+  devtool: 'inline-source-map',
   module: {
     rules: [
       {
@@ -18,9 +19,9 @@ module.exports = {
     }
   },
   output: {
-    libraryTarget: 'window',
-    library: 'GameBoy',
-    filename: 'bundle.js',
+    libraryTarget: 'var',
+    library: 'Phoenix',
+    filename: 'phoenix.js',
     path: path.resolve(__dirname, 'dist')
   }
 };
