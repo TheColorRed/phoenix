@@ -14,12 +14,18 @@ namespace Phoenix {
 
     private debugLine: PIXI.Graphics
 
+    protected get bodySettings(): Matter.IBodyDefinition {
+      return {
+        angle: this.transform.rotation,
+        isStatic: this.isStatic, restitution: clamp01(this.bounciness),
+        friction: clamp01(this.friction), frictionAir: clampMin(this.airFriction, 0)
+      }
+    }
+
     public start() {
-      this._body.restitution = clamp01(this.bounciness)
-      this._body.friction = clamp01(this.friction)
-      this._body.frictionAir = clampMin(this.airFriction, 0)
-      this._body.slop = 0
-      this._body.vertices
+      // this._body.restitution = clamp01(this.bounciness)
+      // this._body.friction = clamp01(this.friction)
+      // this._body.frictionAir = clampMin(this.airFriction, 0)
       this.createDebugBox()
       Matter.Events.on(this.game.physicsEngine, 'collisionStart', e => {
         for (let item of e.source.pairs.list) {
@@ -49,36 +55,60 @@ namespace Phoenix {
     private createDebugBox() {
       if (Rigidbody.debug) {
         this.debugLine = new PIXI.Graphics
-        this.debugLine.lineStyle(1, 0x00FF00)
-        let points: number[] = []
-        this._body.vertices.forEach(v => {
-          points.push(v.x - this.transform.position.x)
-          points.push(v.y - this.transform.position.y)
-        })
-        points.push(this._body.vertices[0].x - this.transform.position.x)
-        points.push(this._body.vertices[0].y - this.transform.position.y)
-        this.debugLine.drawPolygon(points)
-        // this.debugLine.rotation = this._body.angle
         this.game.app.stage.addChild(this.debugLine)
+      }
+    }
+
+    private drawDirectionIndicators() {
+      if (Rigidbody.debug) {
+        this.debugLine.lineStyle(1, 0xFF0000)
+        let x = this.body.position.x
+        let y = this.body.position.y
+        this.debugLine.moveTo(x, y)
+        if (this instanceof CircleCollider) {
+          this.debugLine.lineTo(
+            x + this.radius * Math.cos(this.body.angle),
+            y + this.radius * Math.sin(this.body.angle)
+          )
+        } else if (this instanceof RectangleCollider) {
+          this.debugLine.lineTo(
+            x + (this.width / 2) * Math.cos(this.body.angle),
+            y + (this.width / 2) * Math.sin(this.body.angle)
+          )
+        }
       }
     }
 
     private updateDebugBox() {
       if (Rigidbody.debug) {
-        this.debugLine.x = this._body.position.x
-        this.debugLine.y = this._body.position.y
-        // this.debugLine.rotation = this._body.angle
+        this.debugLine.clear()
+        this.debugLine.lineStyle(1, 0x00FF00)
+        if (this instanceof CircleCollider) {
+          this.debugLine.drawCircle(
+            this.body.position.x,
+            this.body.position.y,
+            this.radius
+          )
+        } else {
+          let points: number[] = []
+          this._body.vertices.forEach(v => {
+            points.push(v.x)
+            points.push(v.y)
+          })
+          points.push(this._body.vertices[0].x)
+          points.push(this._body.vertices[0].y)
+          this.debugLine.drawPolygon(points)
+        }
+        this.drawDirectionIndicators()
       }
     }
-    // public awake() {
-    //   this.x = 0//this.transform.localPosition.x
-    //   this.y = 0//this.transform.localPosition.y
+    // private updateDebugBox() {
+    //   if (Rigidbody.debug) {
+    //     this.debugLine.x = this.body.position.x
+    //     this.debugLine.y = this.body.position.y
+    //     this.debugLine.rotation = this.transform.rotation
+    //     // this.debugLine.rotation = this._body.angle - this._body.angle
+    //   }
     // }
-
-    // public update() {
-    //   this.x = this.transform.position.x
-    //   this.y = this.transform.position.y
-    // }
-
   }
 }

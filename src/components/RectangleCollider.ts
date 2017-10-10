@@ -10,9 +10,8 @@ namespace Phoenix {
         this.transform.position.y,
         this.width,
         this.height,
-        { angle: this.transform.rotation }
+        this.bodySettings
       )
-      Matter.Body.setStatic(this._body, this.isStatic)
       Matter.World.add(this.game.physicsEngine.world, this._body)
     }
 

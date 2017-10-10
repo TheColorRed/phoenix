@@ -7,10 +7,9 @@ namespace Phoenix {
       this._body = Matter.Bodies.circle(
         this.transform.position.x,
         this.transform.position.y,
-        this.radius,
-        { angle: this.transform.rotation }
+        this.radius, this.bodySettings
       )
-      Matter.Body.setStatic(this._body, this.isStatic)
+      // this._body.d
       Matter.World.add(this.game.physicsEngine.world, this._body)
     }
 
