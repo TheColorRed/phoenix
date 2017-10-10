@@ -1,4 +1,14 @@
 namespace Phoenix {
+  export interface PhysicsSettings {
+
+  }
+  export interface GameSettings {
+    units: number
+  }
+  export interface AppSettings {
+    game: GameSettings
+    physics: PhysicsSettings
+  }
   export enum AssetType { Image, Sound, Video }
   export interface Asset<T> {
     name: string
@@ -15,9 +25,13 @@ namespace Phoenix {
     private _assets: Asset<any>[] = []
     private _gameObjects: GameObject[] = []
     private toLoad: number = 0
+    private _settings: AppSettings
+    private _gameTime: number = 0
 
     public get app(): PIXI.Application { return this._app }
     public get physicsEngine(): Matter.Engine { return this._physics }
+    public get unit(): number { return this._settings.game.units }
+    public get time(): number { return this._gameTime }
 
     public constructor(container: string | HTMLElement, width?: number, height?: number) {
       if (typeof container == 'string') {
@@ -28,9 +42,17 @@ namespace Phoenix {
         container.appendChild(this.app.view)
         this.app.view.addEventListener('contextmenu', e => e.preventDefault())
       }
+      this._settings = {
+        game: { units: 100 },
+        physics: {}
+      }
       new Keyboard(this)
       new Mouse(this)
       this.startPhysicsEngine()
+    }
+
+    public settings(settings: AppSettings) {
+      this._settings = (<any>window).deepmerge(this._settings, settings)
     }
 
     public startPhysicsEngine() {
@@ -56,20 +78,21 @@ namespace Phoenix {
     }
 
     public async run() {
+      this.loadImage('phoenix_particle', '../../images/Particle.png')
       if (typeof this.gamePreloader == 'function') {
         this.gamePreloader()
-        PIXI.loader.load((loader: PIXI.loaders.Loader, resources: PIXI.loaders.Resource) => {
-          for (let name in resources) {
-            this._assets.push({
-              name: name,
-              type: AssetType.Image,
-              data: new PIXI.Sprite((<any>resources)[name].texture)
-            })
-            this.toLoad--
-          }
-        })
-        await this.loading()
       }
+      PIXI.loader.load((loader: PIXI.loaders.Loader, resources: PIXI.loaders.Resource) => {
+        for (let name in resources) {
+          this._assets.push({
+            name: name,
+            type: AssetType.Image,
+            data: new PIXI.Sprite((<any>resources)[name].texture)
+          })
+          this.toLoad--
+        }
+      })
+      await this.loading()
       if (typeof this.gameStarter == 'function') {
         await this.gameStarter()
       }
@@ -88,19 +111,25 @@ namespace Phoenix {
       })
     }
 
-    public instantiate(assetKey: string, position?: Vector2) {
-      let go = new GameObject
-      go['_game'] = this
-      // let renderer = go.addComponent(SpriteRenderer)
-      // renderer.sprite = Sprite.create(assetKey)
-      if (position) {
-        go.transform.position = position
-      } else {
-        go.transform.position = new Vector2(this.app.renderer.width / 2, this.app.renderer.height / 2)
+    public instantiate<T extends Prefab>(prefab: PrefabType<T>, position?: Vector2, rotation?: number): GameObject | null {
+      let p: Prefab = new prefab(this)
+      p.init()
+      let gameObject: GameObject = p.gameObject
+      if (gameObject instanceof GameObject) {
+        if (position && position instanceof Vector2) {
+          gameObject.transform.position = position
+        } else {
+          gameObject.transform.position = new Vector2(
+            this.app.renderer.width / 2 / gameObject.game.unit,
+            this.app.renderer.height / 2 / gameObject.game.unit
+          )
+        }
+        if (rotation && typeof rotation == 'number') {
+          gameObject.transform.rotation = rotation
+        }
+        this._gameObjects.push(gameObject)
       }
-      // this.app.stage.addChild(renderer.getDisplayObject)
-      this._gameObjects.push(go)
-      return go
+      return gameObject
     }
 
     private mainLoop() {
@@ -112,7 +141,9 @@ namespace Phoenix {
     }
 
     private startRenderer() {
+      let startTime = Date.now()
       this.app.ticker.add(() => {
+        this._gameTime = parseFloat(((Date.now() - startTime) / 1000).toFixed(2))
         for (let i = 0, l = this._gameObjects.length; i < l; i++) {
           let go = this._gameObjects[i]
           for (let i = 0, l = go['_components'].length; i < l; i++) {

@@ -1,12 +1,14 @@
 namespace Phoenix {
-  export class CircleCollider extends Collider {
+  export class PollyCollider extends Collider {
 
+    public sides: number = 5
     public radius: number = 0.5
 
     public awake() {
-      this._body = Matter.Bodies.circle(
+      this._body = Matter.Bodies.polygon(
         this.transform.position.x * this.game.unit,
         this.transform.position.y * this.game.unit,
+        this.sides,
         this.radius * this.game.unit * this.transform.scale,
         this.bodySettings
       )

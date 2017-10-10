@@ -41,16 +41,24 @@ namespace Phoenix {
       return components
     }
 
+    public instantiate<T extends Prefab>(prefab: PrefabType<T>, position?: Vector2, rotation?: number): GameObject | null {
+      return this.game.instantiate(prefab, position, rotation)
+    }
 
-    public destroy(item: Object, delay: number = 0) {
+    public destroy(item: Object | null, delay: number = 0) {
+      if (!item) return
       setTimeout(() => {
         if (item instanceof GameObject) {
-          this._game.app.stage.removeChild(item.sprite.displayObject)
+          let spr = item.getComponents(SpriteRenderer)
+          let colliders = item.getComponents(Collider)
+          spr && spr.forEach(s => this._game.app.stage.removeChild(s.getDisplayObject))
+          colliders && colliders.forEach(c => Matter.World.remove(this.game.physicsEngine.world, c.body))
           let index = this.game['_gameObjects'].indexOf(item)
           this.game['_gameObjects'].splice(index, 1)
           return
         } else if (item instanceof Component) {
-
+          let idx = item._components.indexOf(item)
+          item._components.splice(idx, 1)
         }
       }, delay)
     }

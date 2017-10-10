@@ -3,6 +3,7 @@ namespace Phoenix {
 
     private _position: Vector2 = Vector2.zero
     private _rotation: number = 0
+    private _scale: number = 1
 
     public set position(value: Vector2) {
       this._position = value
@@ -22,6 +23,14 @@ namespace Phoenix {
 
     public get rotation(): number {
       return this._rotation
+    }
+
+    public set scale(value: number) {
+      this._scale = value
+    }
+
+    public get scale(): number {
+      return this._scale
     }
 
     public translate(position: Vector2) {

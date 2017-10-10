@@ -1,13 +1,15 @@
 namespace Phoenix {
   export class Collider extends Component {
 
+    public static debug: boolean = false
+
     public isStatic: boolean = false
 
     public x: number = 0
     public y: number = 0
     public bounciness: number = 0
     public friction: number = 0
-    public airFriction: number = 0.01
+    public airFriction: number = 0
 
     public get body(): Matter.Body { return this._body }
     protected _body: Matter.Body
@@ -23,9 +25,6 @@ namespace Phoenix {
     }
 
     public start() {
-      // this._body.restitution = clamp01(this.bounciness)
-      // this._body.friction = clamp01(this.friction)
-      // this._body.frictionAir = clampMin(this.airFriction, 0)
       this.createDebugBox()
       Matter.Events.on(this.game.physicsEngine, 'collisionStart', e => {
         for (let item of e.source.pairs.list) {
@@ -48,46 +47,47 @@ namespace Phoenix {
     }
 
     public update() {
+      this.transform.position = new Vector2(this.body.position.x, this.body.position.y)
       this.updateDebugBox()
       // console.log(this.game.physicsEngine.on)
     }
 
     private createDebugBox() {
-      if (Rigidbody.debug) {
+      if (Collider.debug) {
         this.debugLine = new PIXI.Graphics
         this.game.app.stage.addChild(this.debugLine)
       }
     }
 
     private drawDirectionIndicators() {
-      if (Rigidbody.debug) {
+      if (Collider.debug) {
         this.debugLine.lineStyle(1, 0xFF0000)
         let x = this.body.position.x
         let y = this.body.position.y
         this.debugLine.moveTo(x, y)
-        if (this instanceof CircleCollider) {
+        if (this instanceof CircleCollider || this instanceof PollyCollider) {
           this.debugLine.lineTo(
-            x + this.radius * Math.cos(this.body.angle),
-            y + this.radius * Math.sin(this.body.angle)
+            x + (this.radius * this.game.unit * this.transform.scale) * Math.cos(this.body.angle),
+            y + (this.radius * this.game.unit * this.transform.scale) * Math.sin(this.body.angle)
           )
-        } else if (this instanceof RectangleCollider) {
+        } else if (this instanceof BoxCollider) {
           this.debugLine.lineTo(
-            x + (this.width / 2) * Math.cos(this.body.angle),
-            y + (this.width / 2) * Math.sin(this.body.angle)
+            x + (this.width * this.game.unit / 2 * this.transform.scale) * Math.cos(this.body.angle),
+            y + (this.width * this.game.unit / 2 * this.transform.scale) * Math.sin(this.body.angle)
           )
         }
       }
     }
 
     private updateDebugBox() {
-      if (Rigidbody.debug) {
+      if (Collider.debug) {
         this.debugLine.clear()
         this.debugLine.lineStyle(1, 0x00FF00)
         if (this instanceof CircleCollider) {
           this.debugLine.drawCircle(
             this.body.position.x,
             this.body.position.y,
-            this.radius
+            this.radius * this.game.unit * this.transform.scale
           )
         } else {
           let points: number[] = []
@@ -102,13 +102,5 @@ namespace Phoenix {
         this.drawDirectionIndicators()
       }
     }
-    // private updateDebugBox() {
-    //   if (Rigidbody.debug) {
-    //     this.debugLine.x = this.body.position.x
-    //     this.debugLine.y = this.body.position.y
-    //     this.debugLine.rotation = this.transform.rotation
-    //     // this.debugLine.rotation = this._body.angle - this._body.angle
-    //   }
-    // }
   }
 }

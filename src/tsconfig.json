@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "system",
+    "strict": true,
+    "sourceMap": true,
+    "outFile": "../dist/phoenix.js",
+    "removeComments": true,
+    "allowJs": true,
+    "newLine": "LF",
+    "baseUrl": "."
+  },
+  "include": [
+    "../node_modules/pixi.js/dist/pixi.min.js",
+    // "node_modules/pixi-display/bin/pixi-display.js",
+    "../node_modules/poly-decomp/build/decomp.js",
+    "../node_modules/matter-js/build/matter.min.js",
+    "../node_modules/deepmerge/dist/umd.js"
+  ],
+  "files": [
+    // Import the utilities
+    "./util/Object.ts",
+    "./util/Clamp.ts",
+    "./util/Component.ts",
+    "./util/GameObject.ts",
+    "./util/Sprite.ts",
+    "./util/Vector2.ts",
+    "./util/Prefab.ts",
+    "./util/input/Button.ts",
+    "./util/input/Input.ts",
+    "./util/input/Key.ts",
+    "./util/input/Keyboard.ts",
+    "./util/input/Mouse.ts",
+    // Import the components
+    "./components/Collider.ts",
+    "./components/SpriteRenderer.ts",
+    "./components/BoxCollider.ts",
+    "./components/CircleCollider.ts",
+    "./components/PollyCollider.ts",
+    "./components/FreeFormCollider.ts",
+    "./components/Transform.ts",
+    "./components/Rigidbody.ts",
+    "./components/ParticleSystem.ts",
+    // Import the prefabs
+    "./prefabs/Particle.ts",
+    // Import the main game
+    "./Game.ts"
+  ]
+}
