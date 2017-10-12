@@ -7,9 +7,9 @@ namespace Phoenix {
 
     public awake() {
       this._sprite['_game'] = this.game
-      this._sprite['_sprite'] = <Asset<PIXI.Sprite>>this.game.getAsset(this._sprite.name)
-      this._sprite['_sprite'].data.anchor.x = 0.5
-      this._sprite['_sprite'].data.anchor.y = 0.5
+      this._sprite['_sprite'] = new PIXI.Sprite(<PIXI.Texture>(<Asset<any>>this.game.getAsset(this._sprite.name)).data)
+      this._sprite['_sprite'].anchor.x = 0.5
+      this._sprite['_sprite'].anchor.y = 0.5
       this.game.app.stage.addChild(this.getDisplayObject)
     }
 

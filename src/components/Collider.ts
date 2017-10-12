@@ -26,20 +26,20 @@ namespace Phoenix {
 
     public start() {
       this.createDebugBox()
-      Matter.Events.on(this.game.physicsEngine, 'collisionStart', e => {
-        for (let item of e.source.pairs.list) {
-          for (let i = 0; i < this.game['_gameObjects'].length; i++) {
-            let obj = this.game['_gameObjects'][i]
-            let comps = obj.getComponents(Collider)
-            for (let comp of comps) {
-              if (item.bodyB == comp.body) {
-                // Run Collision code here
-              }
-            }
-          }
-        }
-        // console.log(e.source.pairs.list)
-      })
+      // Matter.Events.on(this.game.physicsEngine, 'collisionStart', e => {
+      //   for (let item of e.source.pairs.list) {
+      //     for (let i = 0; i < this.game['_gameObjects'].length; i++) {
+      //       let obj = this.game['_gameObjects'][i]
+      //       let comps = obj.getComponents(Collider)
+      //       for (let comp of comps) {
+      //         if (item.bodyB == comp.body) {
+      //           // Run Collision code here
+      //         }
+      //       }
+      //     }
+      //   }
+      //   // console.log(e.source.pairs.list)
+      // })
       // this.game.physics.
       // Matter.Events.on(this._body, 'collisionStart', e => {
       //   console.log(e)

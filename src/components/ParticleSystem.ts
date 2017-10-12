@@ -15,10 +15,10 @@ namespace Phoenix {
     }
 
     public update() {
-      if (this.game.time % 0.5 == 0) {
-        // console.log(this.game.time)
-        // let p = this.instantiate(Particle, new Vector2(10, 1))
-      }
+      // if (this.game.time % 0.5 == 0) {
+      // console.log(this.game.time)
+      let p = this.instantiate(Particle, new Vector2(10, 1))
+      // }
     }
   }
 }

@@ -87,7 +87,7 @@ namespace Phoenix {
           this._assets.push({
             name: name,
             type: AssetType.Image,
-            data: new PIXI.Sprite((<any>resources)[name].texture)
+            data: (<any>resources)[name].texture
           })
           this.toLoad--
         }

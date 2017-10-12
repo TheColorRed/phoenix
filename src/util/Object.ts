@@ -52,10 +52,10 @@ namespace Phoenix {
           let spr = item.getComponents(SpriteRenderer)
           let colliders = item.getComponents(Collider)
           spr && spr.forEach(s => this._game.app.stage.removeChild(s.getDisplayObject))
+          colliders && colliders.forEach(c => this._game.app.stage.removeChild(c['debugLine']))
           colliders && colliders.forEach(c => Matter.World.remove(this.game.physicsEngine.world, c.body))
           let index = this.game['_gameObjects'].indexOf(item)
           this.game['_gameObjects'].splice(index, 1)
-          return
         } else if (item instanceof Component) {
           let idx = item._components.indexOf(item)
           item._components.splice(idx, 1)

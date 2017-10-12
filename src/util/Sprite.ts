@@ -3,9 +3,9 @@ namespace Phoenix {
   export class Sprite {
 
     protected _name: string
-    protected _sprite: Asset<PIXI.Sprite>
+    protected _sprite: PIXI.Sprite
     protected _game: Game
-    public get displayObject(): PIXI.DisplayObject { return this._sprite.data }
+    public get displayObject(): PIXI.DisplayObject { return this._sprite }
 
     public get name(): string { return this._name }
 
