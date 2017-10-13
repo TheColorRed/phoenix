@@ -117,11 +117,11 @@ namespace Phoenix {
       let gameObject: GameObject = p.gameObject
       if (gameObject instanceof GameObject) {
         if (position && position instanceof Vector2) {
-          gameObject.transform.position = position
+          gameObject.transform.position = position.times(gameObject.game.unit)
         } else {
           gameObject.transform.position = new Vector2(
-            this.app.renderer.width / 2 / gameObject.game.unit,
-            this.app.renderer.height / 2 / gameObject.game.unit
+            this.app.renderer.width / 2 / this.unit,
+            this.app.renderer.height / 2 / this.unit
           )
         }
         if (rotation && typeof rotation == 'number') {

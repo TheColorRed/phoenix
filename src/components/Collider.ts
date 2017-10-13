@@ -10,6 +10,7 @@ namespace Phoenix {
     public bounciness: number = 0
     public friction: number = 0
     public airFriction: number = 0
+    public isTrigger: boolean = false
 
     public get body(): Matter.Body { return this._body }
     protected _body: Matter.Body
@@ -18,6 +19,7 @@ namespace Phoenix {
 
     protected get bodySettings(): Matter.IBodyDefinition {
       return {
+        isSensor: this.isTrigger,
         angle: this.transform.rotation,
         isStatic: this.isStatic, restitution: clamp01(this.bounciness),
         friction: clamp01(this.friction), frictionAir: clampMin(this.airFriction, 0)

@@ -4,6 +4,7 @@ namespace Phoenix {
     private _position: Vector2 = Vector2.zero
     private _rotation: number = 0
     private _scale: number = 1
+    private _parent: Transform
 
     public set position(value: Vector2) {
       this._position = value
@@ -31,6 +32,25 @@ namespace Phoenix {
 
     public get scale(): number {
       return this._scale
+    }
+
+    public set parent(value: Transform) {
+      this._parent = value
+      let selfSpr = this.getComponent(SpriteRenderer)
+      let otherSpr = value.getComponent(SpriteRenderer)
+      if (selfSpr && otherSpr) {
+        selfSpr.getDisplayObject.setParent(otherSpr.getDisplayObject.parent)
+      }
+      // let spr = this.getComponent(SpriteRenderer)
+
+      // if(spr){
+      //   let index = this.game.app.stage.getChildIndex(spr.getDisplayObject)
+      //   let this.game.app.stage.getChildAt(index)
+      // }
+    }
+
+    public get parent(): Transform {
+      return this._parent
     }
 
     public translate(position: Vector2) {
