@@ -9,6 +9,11 @@ namespace Phoenix {
 
     public get name(): string { return this._name }
 
+    public set anchor(value: Vector2) {
+      this._sprite.anchor.x = value.x
+      this._sprite.anchor.y = value.y
+    }
+
     public static create(name: string) {
       return new Sprite(name)
       // spr._game = game

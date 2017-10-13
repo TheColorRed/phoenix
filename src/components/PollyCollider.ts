@@ -6,13 +6,13 @@ namespace Phoenix {
 
     public awake() {
       this._body = Matter.Bodies.polygon(
-        this.transform.position.x * this.game.unit,
-        this.transform.position.y * this.game.unit,
+        this.transform.position.x * this.game.settings.game.units,
+        this.transform.position.y * this.game.settings.game.units,
         this.sides,
-        this.radius * this.game.unit * this.transform.scale,
+        this.radius * this.game.settings.game.units * this.transform.scale,
         this.bodySettings
       )
-      Matter.World.add(this.game.physicsEngine.world, this._body)
+      Matter.World.add(this.game.physicsEngine2d.world, this._body)
     }
 
   }

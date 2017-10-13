@@ -28,24 +28,6 @@ namespace Phoenix {
 
     public start() {
       this.createDebugBox()
-      // Matter.Events.on(this.game.physicsEngine, 'collisionStart', e => {
-      //   for (let item of e.source.pairs.list) {
-      //     for (let i = 0; i < this.game['_gameObjects'].length; i++) {
-      //       let obj = this.game['_gameObjects'][i]
-      //       let comps = obj.getComponents(Collider)
-      //       for (let comp of comps) {
-      //         if (item.bodyB == comp.body) {
-      //           // Run Collision code here
-      //         }
-      //       }
-      //     }
-      //   }
-      //   // console.log(e.source.pairs.list)
-      // })
-      // this.game.physics.
-      // Matter.Events.on(this._body, 'collisionStart', e => {
-      //   console.log(e)
-      // })
     }
 
     public update() {
@@ -69,13 +51,13 @@ namespace Phoenix {
         this.debugLine.moveTo(x, y)
         if (this instanceof CircleCollider || this instanceof PollyCollider) {
           this.debugLine.lineTo(
-            x + (this.radius * this.game.unit * this.transform.scale) * Math.cos(this.body.angle),
-            y + (this.radius * this.game.unit * this.transform.scale) * Math.sin(this.body.angle)
+            x + (this.radius * this.game.settings.game.units * this.transform.scale) * Math.cos(this.body.angle),
+            y + (this.radius * this.game.settings.game.units * this.transform.scale) * Math.sin(this.body.angle)
           )
         } else if (this instanceof BoxCollider) {
           this.debugLine.lineTo(
-            x + (this.width * this.game.unit / 2 * this.transform.scale) * Math.cos(this.body.angle),
-            y + (this.width * this.game.unit / 2 * this.transform.scale) * Math.sin(this.body.angle)
+            x + (this.width * this.game.settings.game.units / 2 * this.transform.scale) * Math.cos(this.body.angle),
+            y + (this.width * this.game.settings.game.units / 2 * this.transform.scale) * Math.sin(this.body.angle)
           )
         }
       }
@@ -89,7 +71,7 @@ namespace Phoenix {
           this.debugLine.drawCircle(
             this.body.position.x,
             this.body.position.y,
-            this.radius * this.game.unit * this.transform.scale
+            this.radius * this.game.settings.game.units * this.transform.scale
           )
         } else {
           let points: number[] = []

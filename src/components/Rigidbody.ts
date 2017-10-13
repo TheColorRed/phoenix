@@ -3,12 +3,12 @@ namespace Phoenix {
   export class Rigidbody extends Collider {
     public awake() {
       this._body = Matter.Bodies.rectangle(
-        this.transform.position.x * this.game.unit,
-        this.transform.position.y * this.game.unit,
+        this.transform.position.x * this.game.settings.game.units,
+        this.transform.position.y * this.game.settings.game.units,
         0, 0,
         this.bodySettings
       )
-      Matter.World.add(this.game.physicsEngine.world, this._body)
+      Matter.World.add(this.game.physicsEngine2d.world, this._body)
     }
   }
 

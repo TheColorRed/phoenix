@@ -26,6 +26,8 @@
     "./util/Sprite.ts",
     "./util/Vector2.ts",
     "./util/Prefab.ts",
+    "./util/Physics2d.ts",
+    "./util/Debug.ts",
     "./util/input/Button.ts",
     "./util/input/Input.ts",
     "./util/input/Key.ts",

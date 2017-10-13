@@ -1,13 +1,13 @@
 namespace Phoenix {
-  export interface PhysicsSettings {
-
+  export interface PhysicsSettings2d {
+    enabled: boolean
   }
   export interface GameSettings {
     units: number
   }
   export interface AppSettings {
     game: GameSettings
-    physics: PhysicsSettings
+    physics: PhysicsSettings2d
   }
   export enum AssetType { Image, Sound, Video }
   export interface Asset<T> {
@@ -21,16 +21,17 @@ namespace Phoenix {
     private gameStarter: Function
     private gamePreloader: Function
     private _app: PIXI.Application
-    private _physics: Matter.Engine
+    private _physics2d: Physics2d
     private _assets: Asset<any>[] = []
     private _gameObjects: GameObject[] = []
     private toLoad: number = 0
     private _settings: AppSettings
     private _gameTime: number = 0
+    private _startTime: number = 0
 
     public get app(): PIXI.Application { return this._app }
-    public get physicsEngine(): Matter.Engine { return this._physics }
-    public get unit(): number { return this._settings.game.units }
+    public get physicsEngine2d(): Physics2d { return this._physics2d }
+    public get settings(): AppSettings { return this._settings }
     public get time(): number { return this._gameTime }
 
     public constructor(container: string | HTMLElement, width?: number, height?: number) {
@@ -44,24 +45,21 @@ namespace Phoenix {
       }
       this._settings = {
         game: { units: 100 },
-        physics: {}
+        physics: { enabled: true }
       }
       new Keyboard(this)
       new Mouse(this)
-      this.startPhysicsEngine()
     }
 
-    public settings(settings: AppSettings) {
+    public setSettings(settings: AppSettings) {
       this._settings = (<any>window).deepmerge(this._settings, settings)
     }
 
-    public startPhysicsEngine() {
-      this._physics = Matter.Engine.create(undefined, {
-        positionIterations: 10,
-        velocityIterations: 10
-      })
-      // Game._physics.positionIterations = 10
-      Matter.Engine.run(this._physics)
+    public start2dPhysicsEngine() {
+      if (this.settings.physics.enabled) {
+        Debug.log('starting physics 2d')
+        this._physics2d = Physics2d.create(this)
+      }
     }
 
     public loadImage(name: string, value: string) {
@@ -78,6 +76,7 @@ namespace Phoenix {
     }
 
     public async run() {
+      this.start2dPhysicsEngine()
       this.loadImage('phoenix_particle', '../../images/Particle.png')
       if (typeof this.gamePreloader == 'function') {
         this.gamePreloader()
@@ -96,8 +95,8 @@ namespace Phoenix {
       if (typeof this.gameStarter == 'function') {
         await this.gameStarter()
       }
-      this.startRenderer()
-      requestAnimationFrame(this.mainLoop.bind(this))
+      this._startTime = Date.now()
+      setTimeout(this.mainLoop.bind(this))
     }
 
     public loading() {
@@ -117,11 +116,11 @@ namespace Phoenix {
       let gameObject: GameObject = p.gameObject
       if (gameObject instanceof GameObject) {
         if (position && position instanceof Vector2) {
-          gameObject.transform.position = position.times(gameObject.game.unit)
+          gameObject.transform.position = position
         } else {
           gameObject.transform.position = new Vector2(
-            this.app.renderer.width / 2 / this.unit,
-            this.app.renderer.height / 2 / this.unit
+            this.app.renderer.width / 2 / this.settings.game.units,
+            this.app.renderer.height / 2 / this.settings.game.units
           )
         }
         if (rotation && typeof rotation == 'number') {
@@ -133,45 +132,43 @@ namespace Phoenix {
     }
 
     private mainLoop() {
-
-      Keyboard.clear()
-      Mouse.clear()
-
-      requestAnimationFrame(this.mainLoop.bind(this))
-    }
-
-    private startRenderer() {
-      let startTime = Date.now()
-      this.app.ticker.add(() => {
-        this._gameTime = parseFloat(((Date.now() - startTime) / 1000).toFixed(2))
-        for (let i = 0, l = this._gameObjects.length; i < l; i++) {
-          let go = this._gameObjects[i]
-          for (let i = 0, l = go['_components'].length; i < l; i++) {
-            let c = go['_components'][i] as any
-            if (!c['runAwake']) {
-              if (typeof c['awake'] == 'function') {
-                c['awake']()
-              }
-              c['runAwake'] = true
+      this._gameTime = parseFloat(((Date.now() - this._startTime) / 1000).toFixed(2))
+      for (let i = 0, l = this._gameObjects.length; i < l; i++) {
+        let go = this._gameObjects[i]
+        for (let i = 0, l = go['_components'].length; i < l; i++) {
+          let c = go['_components'][i] as any
+          if (!c['runAwake']) {
+            if (typeof c['awake'] == 'function') {
+              c['awake']()
             }
-          }
-          for (let i = 0, l = go['_components'].length; i < l; i++) {
-            let c = go['_components'][i] as any
-            if (!c['runStart']) {
-              if (typeof c['start'] == 'function') {
-                c['start']()
-              }
-              c['runStart'] = true
-            }
-          }
-          for (let i = 0, l = go['_components'].length; i < l; i++) {
-            let c = go['_components'][i] as any
-            if (typeof c['update'] == 'function') {
-              c['update']()
-            }
+            c['runAwake'] = true
           }
         }
-      })
+        for (let i = 0, l = go['_components'].length; i < l; i++) {
+          let c = go['_components'][i] as any
+          if (!c['runStart']) {
+            if (typeof c['start'] == 'function') {
+              c['start']()
+            }
+            c['runStart'] = true
+          }
+        }
+        for (let i = 0, l = go['_components'].length; i < l; i++) {
+          let c = go['_components'][i] as any
+          if (typeof c['update'] == 'function') {
+            c['update']()
+          }
+        }
+        for (let i = 0, l = go['_components'].length; i < l; i++) {
+          let c = go['_components'][i] as any
+          if (typeof c['lateUpdate'] == 'function') {
+            c['lateUpdate']()
+          }
+        }
+      }
+      Keyboard.clear()
+      Mouse.clear()
+      setTimeout(this.mainLoop.bind(this))
     }
 
     public getAsset(key: string) {

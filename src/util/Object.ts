@@ -47,20 +47,22 @@ namespace Phoenix {
 
     public destroy(item: Object | null, delay: number = 0) {
       if (!item) return
-      setTimeout(() => {
-        if (item instanceof GameObject) {
-          let spr = item.getComponents(SpriteRenderer)
-          let colliders = item.getComponents(Collider)
-          spr && spr.forEach(s => this._game.app.stage.removeChild(s.getDisplayObject))
-          colliders && colliders.forEach(c => this._game.app.stage.removeChild(c['debugLine']))
-          colliders && colliders.forEach(c => Matter.World.remove(this.game.physicsEngine.world, c.body))
-          let index = this.game['_gameObjects'].indexOf(item)
-          this.game['_gameObjects'].splice(index, 1)
-        } else if (item instanceof Component) {
-          let idx = item._components.indexOf(item)
-          item._components.splice(idx, 1)
-        }
-      }, delay)
+      delay > 0 ? setTimeout(() => { this._destroy(item) }, delay) : this._destroy(item)
+    }
+
+    private _destroy(item: Object) {
+      if (item instanceof GameObject) {
+        let spr = item.getComponents(SpriteRenderer)
+        let colliders = item.getComponents(Collider)
+        spr && spr.forEach(s => this._game.app.stage.removeChild(s.getDisplayObject))
+        colliders && colliders.forEach(c => this._game.app.stage.removeChild(c['debugLine']))
+        colliders && colliders.forEach(c => this.game.physicsEngine2d.world && c.body && Matter.World.remove(this.game.physicsEngine2d.world, c.body))
+        let index = this.game['_gameObjects'].indexOf(item)
+        this.game['_gameObjects'].splice(index, 1)
+      } else if (item instanceof Component) {
+        let idx = item._components.indexOf(item)
+        item._components.splice(idx, 1)
+      }
     }
   }
 }

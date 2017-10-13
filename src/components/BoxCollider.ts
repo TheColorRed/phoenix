@@ -6,13 +6,13 @@ namespace Phoenix {
 
     public awake() {
       this._body = Matter.Bodies.rectangle(
-        this.transform.position.x * this.game.unit,
-        this.transform.position.y * this.game.unit,
-        this.width * this.game.unit * this.transform.scale,
-        this.height * this.game.unit * this.transform.scale,
+        this.transform.position.x * this.game.settings.game.units,
+        this.transform.position.y * this.game.settings.game.units,
+        this.width * this.game.settings.game.units * this.transform.scale,
+        this.height * this.game.settings.game.units * this.transform.scale,
         this.bodySettings
       )
-      Matter.World.add(this.game.physicsEngine.world, this._body)
+      Matter.World.add(this.game.physicsEngine2d.world, this._body)
     }
 
   }
