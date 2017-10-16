@@ -3,17 +3,38 @@ import { Ball } from './prefabs/Ball.js'
 import { Polly } from './prefabs/Polly.js'
 const game = new Phoenix.Game('#container')
 
+class QueueTest extends Phoenix.QueueProcess {
+
+  start() {
+    console.log('Process Starting')
+  }
+
+  process() {
+    for (let i = 0; i < 10; i++) {
+      console.log(i)
+    }
+  }
+
+}
+
+
 game.start(() => {
   Phoenix.Collider.debug = true
 
-  // Add the bottom floor
+  let q = new Phoenix.Queue
+  q.add(QueueTest, QueueTest)
+
+  // Add the bottom floors
   let floor1 = game.instantiate(Floor, new Phoenix.Vector2(10.3, 10))
   floor1.transform.rotation = -0.2
 
-  // Add the top floor
-  let floor2 = game.instantiate(Floor, new Phoenix.Vector2(10.3, 5))
+  let floor2 = game.instantiate(Floor, new Phoenix.Vector2(10.3, 10))
   floor2.transform.rotation = 0.2
-  let c2 = floor2.getComponent(Phoenix.BoxCollider)
+
+  // Add the top floor
+  let floor3 = game.instantiate(Floor, new Phoenix.Vector2(10.3, 5))
+  floor3.transform.rotation = 0.2
+  let c2 = floor3.getComponent(Phoenix.BoxCollider)
   c2.width = 10
 
   // Add the items

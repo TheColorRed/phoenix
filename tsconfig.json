@@ -2,10 +2,11 @@
   "compilerOptions": {
     "target": "es6",
     "module": "system",
-    "strict": true
+    "strict": true,
+    "allowJs": true
   },
   "exclude": [
-    "../node_modules",
-    "../dist"
+    "node_modules",
+    "dist"
   ]
 }

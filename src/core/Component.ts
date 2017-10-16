@@ -1,7 +1,7 @@
 namespace Phoenix {
 
   export interface ComponentType<T extends Component> {
-    new(gameObject: GameObject): T;
+    new(gameObject: GameObject): T
   }
 
   export class Component extends Object {

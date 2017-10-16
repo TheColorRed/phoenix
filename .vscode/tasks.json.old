@@ -1,0 +1,52 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "taskName": "build",
+      "type": "shell",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": [
+        "build tsc",
+        "concat files",
+        "minify"
+      ]
+    },
+    {
+      "taskName": "build tsc",
+      "type": "shell",
+      "command": "tsc",
+      "args": [
+        "-w -p src"
+      ]
+    },
+    {
+      "taskName": "concat files",
+      "type": "shell",
+      "command": "watch",
+      "windows": {
+        "args": [
+          "'concat -o dist/phoenix.js",
+          "node_modules/pixi.js/dist/pixi.min.js",
+          "node_modules/poly-decomp/build/decomp.min.js",
+          "node_modules/matter-js/build/matter.min.js",
+          "node_modules/deepmerge/dist/umd.js",
+          "build/phoenix.js",
+          "' ./build/phoenix.min.js"
+        ]
+      }
+    },
+    {
+      "taskName": "minify",
+      "type": "shell",
+      "command": "watch",
+      "windows": {
+        "args": [
+          "'uglifyjs -c -m -o build/phoenix.min.js -- build/phoenix.js' ./build/phoenix.js"
+        ]
+      }
+    }
+  ]
+}
