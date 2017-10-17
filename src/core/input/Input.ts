@@ -1,4 +1,3 @@
-// import { Key, Button } from '.'
 namespace Phoenix {
   export class Input<T extends Key | Button> {
     protected _map: T[] = []

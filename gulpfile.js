@@ -5,7 +5,15 @@ const uglify = require('gulp-uglify-es').default
 const rename = require('gulp-rename')
 const concat = require('gulp-concat')
 
-gulp.task('build ts', () => {
+const files = [
+  'node_modules/pixi.js/dist/pixi.min.js',
+  'node_modules/poly-decomp/build/decomp.min.js',
+  'node_modules/matter-js/build/matter.min.js',
+  'node_modules/deepmerge/dist/umd.js',
+  'dist/phoenix.js',
+]
+
+gulp.task('build-ts', () => {
   // Load the config
   let project = tsc.createProject('src/tsconfig.json', { declaration: true })
 
@@ -17,28 +25,23 @@ gulp.task('build ts', () => {
   // Output the files
   result.dts.pipe(gulp.dest('dist'))
   return result.js
-    .pipe(sourcemaps.write('../dist'))
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest('dist'))
 })
 
-gulp.task('concat', ['build ts'], () => {
-  return gulp.src([
-    "node_modules/pixi.js/dist/pixi.js",
-    "node_modules/poly-decomp/build/decomp.js",
-    "node_modules/matter-js/build/matter.js",
-    "node_modules/deepmerge/dist/umd.js",
-    "dist/phoenix.js",
-  ])
-    // Save the file unminified file
+gulp.task('concat', ['build-ts'], () => {
+  return gulp.src(files)
     .pipe(concat('phoenix.js'))
     .pipe(gulp.dest('dist'))
-    // Uglify the unminified file
-    .pipe(uglify())
-    // Save the minified file
-    .pipe(concat('phoenix.min.js'))
-    .pipe(gulp.dest('dist'))
 })
 
-gulp.task('build', ['concat'], () => {
+gulp.task('dev', ['concat'], () => {
   gulp.watch('src/**/*.ts', ['concat'])
+})
+
+gulp.task('prod', ['concat'], () => {
+  return gulp.src('dist/phoenix.js')
+    .pipe(uglify())
+    .pipe(rename('phoenix.min.js'))
+    .pipe(gulp.dest('dist'))
 })

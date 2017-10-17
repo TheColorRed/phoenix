@@ -39,7 +39,7 @@ namespace Phoenix {
       let selfSpr = this.getComponent(SpriteRenderer)
       let otherSpr = value.getComponent(SpriteRenderer)
       if (selfSpr && otherSpr) {
-        selfSpr.getDisplayObject.setParent(otherSpr.getDisplayObject.parent)
+        selfSpr.displayObject.setParent(otherSpr.displayObject.parent)
       }
       // let spr = this.getComponent(SpriteRenderer)
 

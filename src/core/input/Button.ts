@@ -1,4 +1,3 @@
-// import { Mouse } from '.'
 namespace Phoenix {
   export enum ButtonState { None, Pressed, Released }
 

@@ -1,4 +1,3 @@
-// import { Keyboard } from '.'
 namespace Phoenix {
   export enum KeyState { None, Pressed, Released }
 

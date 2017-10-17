@@ -39,7 +39,7 @@ namespace Phoenix {
     private createDebugBox() {
       if (Collider.debug) {
         this.debugLine = new PIXI.Graphics
-        this.game.app.stage.addChild(this.debugLine)
+        this.game.renderer.debug.add(this.debugLine)
       }
     }
 

@@ -1,4 +1,3 @@
-// import { Input, Key, KeyState } from '.'
 namespace Phoenix {
   export class Keyboard extends Input<Key> {
 
@@ -6,7 +5,7 @@ namespace Phoenix {
 
     public constructor(game: Game) {
       if (Keyboard.instance) return
-      let canvas: HTMLCanvasElement = game.app.view
+      let canvas: HTMLCanvasElement = game.renderer.view
       super()
       Keyboard.instance = this
       this._generateKeyMap()

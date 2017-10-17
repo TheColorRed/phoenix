@@ -4,7 +4,7 @@ namespace Phoenix {
     new(gameObject: GameObject): T
   }
 
-  export class Component extends Object {
+  export abstract class Component extends Object {
 
     private runStart: boolean = false
     private runAwake: boolean = false

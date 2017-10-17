@@ -22,6 +22,8 @@
     "./core/Component.ts",
     "./core/GameObject.ts",
     "./core/Physics2d.ts",
+    "./core/Renderer.ts",
+    "./core/AssetManager.ts",
     "./core/input/Button.ts",
     "./core/input/Input.ts",
     "./core/input/Key.ts",
@@ -37,6 +39,7 @@
     "./components/Transform.ts",
     "./components/Rigidbody.ts",
     "./components/ParticleSystem.ts",
+    "./components/PlayerController.ts",
     // Import the prefabs
     "./prefabs/Particle.ts",
     // Import the main game
