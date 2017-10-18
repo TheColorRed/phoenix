@@ -1,17 +1,25 @@
 namespace Phoenix {
   export class Object {
 
-    protected gameObject: GameObject
+    private _gameObject: GameObject
     private _game: Game
     private _transform: Transform
     private _components: Component[] = []
 
     public get transform(): Transform { return this._transform }
     public get game(): Game { return this._game }
+    public get settings(): AppSettings { return this._game.settings }
+    public get components(): Component[] { return this.gameObject._components }
+    public get gameObject(): GameObject { return this._gameObject }
 
     public addComponent<T extends Component>(component: ComponentType<T>): T {
       let c = new component(this.gameObject)
       this.gameObject._components.push(c)
+      if (!(c instanceof Transform)) {
+        if (!this.settings.physics.enabled && c instanceof Collider) {
+          Debug.warning('You are adding a collider to a game without physics')
+        }
+      }
       return c
     }
 

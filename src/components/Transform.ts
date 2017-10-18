@@ -41,12 +41,6 @@ namespace Phoenix {
       if (selfSpr && otherSpr) {
         selfSpr.displayObject.setParent(otherSpr.displayObject.parent)
       }
-      // let spr = this.getComponent(SpriteRenderer)
-
-      // if(spr){
-      //   let index = this.game.app.stage.getChildIndex(spr.getDisplayObject)
-      //   let this.game.app.stage.getChildAt(index)
-      // }
     }
 
     public get parent(): Transform {
@@ -54,8 +48,7 @@ namespace Phoenix {
     }
 
     public translate(position: Vector2) {
-      this.gameObject.sprite.displayObject.x += position.x
-      this.gameObject.sprite.displayObject.y += position.y
+      this.position = new Vector2(this.position.x + position.x, this.position.y + position.y)
     }
 
   }

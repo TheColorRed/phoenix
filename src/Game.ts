@@ -1,6 +1,7 @@
 namespace Phoenix {
   export interface PhysicsSettings2d {
     enabled: boolean
+    gravity: Vector2
   }
   export interface GameSettings {
     units: number
@@ -37,7 +38,7 @@ namespace Phoenix {
       }
       this._settings = {
         game: { units: 100 },
-        physics: { enabled: true }
+        physics: { enabled: true, gravity: Vector2.down }
       }
       new Keyboard(this)
       new Mouse(this)
@@ -49,7 +50,6 @@ namespace Phoenix {
 
     public start2dPhysicsEngine() {
       if (this.settings.physics.enabled) {
-        Debug.log('starting physics 2d')
         this._physics2d = Physics2d.create(this)
       }
     }
@@ -92,22 +92,21 @@ namespace Phoenix {
     public instantiate<T extends Prefab>(prefab: PrefabType<T>, position?: Vector2, rotation?: number): GameObject | null {
       let p: Prefab = new prefab(this)
       p.init()
-      let gameObject: GameObject = p.gameObject
-      if (gameObject instanceof GameObject) {
+      if (p.gameObject instanceof GameObject) {
         if (position && position instanceof Vector2) {
-          gameObject.transform.position = position
+          p.gameObject.transform.position = position
         } else {
-          gameObject.transform.position = new Vector2(
+          p.gameObject.transform.position = new Vector2(
             this.renderer.view.width / 2 / this.settings.game.units,
             this.renderer.view.height / 2 / this.settings.game.units
           )
         }
         if (rotation && typeof rotation == 'number') {
-          gameObject.transform.rotation = rotation
+          p.gameObject.transform.rotation = rotation
         }
-        this._gameObjects.push(gameObject)
+        this._gameObjects.push(p.gameObject)
       }
-      return gameObject
+      return p.gameObject
     }
 
     private mainLoop() {

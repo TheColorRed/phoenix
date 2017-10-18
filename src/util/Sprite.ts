@@ -23,14 +23,16 @@ namespace Phoenix {
     protected _rows: number = 1
     protected _cols: number = 1
     protected _frames: PIXI.Texture[] = []
+    protected _displayObject: PIXI.DisplayObject
 
-    public get displayObject(): PIXI.DisplayObject { return this._sprite }
+    public get displayObject(): PIXI.DisplayObject { return this._displayObject || this._sprite }
 
     public get name(): string { return this._name }
     public get asset(): Asset<PIXI.Texture> { return this._asset }
     public set asset(value: Asset<PIXI.Texture>) {
       this._asset = value
       this._sprite = new PIXI.Sprite(value.data)
+      this._init()
     }
     private set anchor(value: Vector2) { this._anchor = value }
     private set rows(value: number) { this._rows = value }
@@ -70,11 +72,9 @@ namespace Phoenix {
 
     private _init() {
       if (this._rows > 1 || this._cols > 1) {
-        let bounds = this.displayObject.getBounds()
-        let width = bounds.width
-        let height = bounds.height
-        let cellWidth = width / this._cols
-        let cellHeight = height / this._rows
+        let bounds = this._sprite.getBounds()
+        let cellWidth = bounds.width / this._cols
+        let cellHeight = bounds.height / this._rows
         let cellCount = this._cols * this._rows
         let currentCol = 0
         let currentRow = 0
@@ -91,6 +91,13 @@ namespace Phoenix {
             currentCol = 0
           }
         }
+        let anim = new PIXI.extras.AnimatedSprite(this._frames)
+        anim.animationSpeed = 0.5
+        anim.play()
+        anim.anchor.x = this._anchor.x
+        anim.anchor.y = this._anchor.y
+        this._displayObject = anim
+        // this._game.renderer.game.add(anim)
       }
     }
 

@@ -30,16 +30,17 @@
     "./core/input/Keyboard.ts",
     "./core/input/Mouse.ts",
     // Import the components
-    "./components/Collider.ts",
     "./components/SpriteRenderer.ts",
-    "./components/BoxCollider.ts",
-    "./components/CircleCollider.ts",
-    "./components/PollyCollider.ts",
-    "./components/FreeFormCollider.ts",
     "./components/Transform.ts",
-    "./components/Rigidbody.ts",
     "./components/ParticleSystem.ts",
     "./components/PlayerController.ts",
+    "./components/physics2d/Collider.ts",
+    "./components/physics2d/BoxCollider.ts",
+    "./components/physics2d/CircleCollider.ts",
+    "./components/physics2d/CapsuleCollider.ts",
+    "./components/physics2d/PollyCollider.ts",
+    "./components/physics2d/FreeFormCollider.ts",
+    "./components/physics2d/Rigidbody.ts",
     // Import the prefabs
     "./prefabs/Particle.ts",
     // Import the main game

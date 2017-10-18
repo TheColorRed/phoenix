@@ -19,13 +19,13 @@ gulp.task('build-ts', () => {
 
   // Build the project
   let result = project.src()
-    .pipe(sourcemaps.init())
+    // .pipe(sourcemaps.init())
     .pipe(project())
 
   // Output the files
   result.dts.pipe(gulp.dest('dist'))
   return result.js
-    .pipe(sourcemaps.write())
+    // .pipe(sourcemaps.write())
     .pipe(gulp.dest('dist'))
 })
 
