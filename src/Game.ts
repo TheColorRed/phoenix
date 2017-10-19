@@ -115,20 +115,20 @@ namespace Phoenix {
         let go = this._gameObjects[i]
         for (let i = 0, l = go['_components'].length; i < l; i++) {
           let c = go['_components'][i] as any
-          if (!c['runAwake']) {
+          if (!c['awakeRan']) {
             if (typeof c['awake'] == 'function') {
               c['awake']()
             }
-            c['runAwake'] = true
+            c['awakeRan'] = true
           }
         }
         for (let i = 0, l = go['_components'].length; i < l; i++) {
           let c = go['_components'][i] as any
-          if (!c['runStart']) {
+          if (!c['startRan']) {
             if (typeof c['start'] == 'function') {
               c['start']()
             }
-            c['runStart'] = true
+            c['startRan'] = true
           }
         }
         for (let i = 0, l = go['_components'].length; i < l; i++) {

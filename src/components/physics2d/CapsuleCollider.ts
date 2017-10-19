@@ -11,7 +11,13 @@ namespace Phoenix {
           this.transform.position.y * this.settings.game.units,
           this.width * this.settings.game.units * this.transform.scale * this.scale.x,
           this.height * this.settings.game.units * this.transform.scale * this.scale.y,
-          (<any>window).deepmerge(this.bodySettings, { chamfer: { radius: this.width * this.settings.game.units / 6 } })
+          (<any>window).deepmerge(this.bodySettings, {
+            chamfer: {
+              radius: this.height > this.width ?
+                this.width * this.settings.game.units / 6 :
+                this.height * this.settings.game.units / 6
+            }
+          })
         )
 
         Matter.World.add(this.game.physicsEngine2d.world, this._body)

@@ -3,8 +3,6 @@ namespace Phoenix {
 
     public static debug: boolean = false
 
-    public isStatic: boolean = false
-
     public x: number = 0
     public y: number = 0
     public bounciness: number = 0
@@ -14,7 +12,7 @@ namespace Phoenix {
     public scale: Vector2 = Vector2.one
     public offset: Vector2 = Vector2.zero
     public isKinematic: boolean = false
-
+    public isStatic: boolean = false
 
     public get body(): Matter.Body { return this._body }
     public get id(): number { return this._body.id }
@@ -42,6 +40,9 @@ namespace Phoenix {
 
     public start() {
       if (this.settings.physics.enabled) {
+        if (this.isKinematic) {
+          Matter.Body.setInertia(this.body, -100)
+        }
         this.createDebugBox()
       }
     }
@@ -52,6 +53,10 @@ namespace Phoenix {
     //     y: this.transform.position.y * this.settings.game.units
     //   })
     // }
+
+    public onCollisionEnter(other: GameObject) {
+      console.log(other)
+    }
 
     public lateUpdate() {
       if (this.settings.physics.enabled) {
@@ -67,6 +72,10 @@ namespace Phoenix {
             y: (this.transform.position.y + this.offset.y) * this.settings.game.units
           })
         }
+        // Matter.Body.setPosition(this.body, {
+        //   x: (this.transform.position.x + this.offset.x) * this.settings.game.units,
+        //   y: (this.transform.position.y + this.offset.y) * this.settings.game.units
+        // })
         this.updateDebugBox()
       }
     }

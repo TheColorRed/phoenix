@@ -25,9 +25,9 @@ namespace Phoenix {
       }
     }
 
-    public onCollisionEnter(other: GameObject) {
-      console.log(other)
-    }
+    // public onCollisionEnter(other: GameObject) {
+    //   console.log(other)
+    // }
 
     public update() {
       // Move Left

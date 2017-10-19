@@ -16,7 +16,16 @@ namespace Phoenix {
     }
 
     private constructor(game: Game) {
-      Debug.log('Starting 2d physics engine')
+      const args = [
+        `\n %c %c %c matter.js ${(<any>window).Matter['version']} %c  %c  http://brm.io/matter-js/  %c \n\n`,
+        'background: #76f09b; padding:5px 0;',
+        'background: #76f09b; padding:5px 0;',
+        'color: #76f09b; background: #030307; padding:5px 0;',
+        'background: #76f09b; padding:5px 0;',
+        'background: #bfefce; padding:5px 0;',
+        'background: #76f09b; padding:5px 0;',
+      ];
+      window.console.log.apply(console, args);
       this._game = game
       this._engine = Matter.Engine.create(undefined, {
         positionIterations: 10,
@@ -28,22 +37,22 @@ namespace Phoenix {
 
       Matter.Events.on(this._engine, 'collisionStart', e => {
         for (let item of e.source.pairs.list) {
-          let bId: number = item.bodyB.id
-          let bItem = this._game['_gameObjects'].find(go => {
+          let aId: number = (<Matter.Body>item.bodyA).id
+          let bId: number = (<Matter.Body>item.bodyB).id
+          if (aId == bId) continue
+          let go = this._game['_gameObjects'].find(go => {
             let colliders = go.getComponents(Collider)
             for (let c of colliders) {
-              if (c.id == bId) {
+              if (c.id == bId && aId != c.id) {
                 return true
               }
             }
             return false
           })
-          if (bItem) {
-            for (let go of this._game['_gameObjects']) {
-              for (let comp of go.components) {
-                if (typeof comp['onCollisionEnter'] == 'function') {
-                  comp['onCollisionEnter'](bItem)
-                }
+          if (go) {
+            for (let comp of go.components) {
+              if (typeof comp['onCollisionEnter'] == 'function') {
+                comp['onCollisionEnter'](go)
               }
             }
           }

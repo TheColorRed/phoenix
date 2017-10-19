@@ -6,8 +6,8 @@ namespace Phoenix {
 
   export abstract class Component extends Object {
 
-    private runStart: boolean = false
-    private runAwake: boolean = false
+    private startRan: boolean = false
+    private awakeRan: boolean = false
 
     public constructor(gameObject: GameObject) {
       super()
