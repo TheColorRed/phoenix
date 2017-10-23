@@ -8,11 +8,10 @@ namespace Phoenix {
 
     public static get position(): Vector2 { return this.mousePosition }
 
-    public constructor(game: Game) {
+    public constructor() {
       if (Mouse.instance) return
       super()
-      this.game = game
-      let canvas: HTMLCanvasElement = game.renderer.view
+      let canvas: HTMLCanvasElement = Game.renderer.view
       Mouse.instance = this
       this._generateButtonMap()
 
@@ -46,7 +45,7 @@ namespace Phoenix {
       })
 
       canvas.addEventListener('mousemove', e => {
-        let rect = this.game.renderer.view.getBoundingClientRect()
+        let rect = Game.renderer.view.getBoundingClientRect()
         Mouse.mousePosition = new Vector2(e.clientX - rect.left, e.clientY - rect.top)
       })
 

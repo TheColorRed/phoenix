@@ -2,13 +2,11 @@ namespace Phoenix {
   export class Object {
 
     private _gameObject: GameObject
-    private _game: Game
     private _transform: Transform
     private _components: Component[] = []
 
     public get transform(): Transform { return this._transform }
-    public get game(): Game { return this._game }
-    public get settings(): AppSettings { return this._game.settings }
+    public get settings(): AppSettings { return Game.settings }
     public get components(): Component[] { return this.gameObject._components }
     public get gameObject(): GameObject { return this._gameObject }
 
@@ -16,7 +14,7 @@ namespace Phoenix {
       let c = new component(this.gameObject)
       this.gameObject._components.push(c)
       if (!(c instanceof Transform)) {
-        if (!this.settings.physics.enabled && c instanceof Collider) {
+        if (!Game.settings.physics.enabled && c instanceof Collider) {
           Debug.warning('You are adding a collider to a game without physics')
         }
       }
@@ -50,7 +48,7 @@ namespace Phoenix {
     }
 
     public instantiate<T extends Prefab>(prefab: PrefabType<T>, position?: Vector2, rotation?: number): GameObject | null {
-      return this.game.instantiate(prefab, position, rotation)
+      return Game.instance.instantiate(prefab, position, rotation)
     }
 
     public destroy(item: Object | null, delay: number = 0) {
@@ -62,11 +60,11 @@ namespace Phoenix {
       if (item instanceof GameObject) {
         let spr = item.getComponents(SpriteRenderer)
         let colliders = item.getComponents(Collider)
-        spr && spr.forEach(s => this._game.renderer.game.remove(s.displayObject))
-        colliders && colliders.forEach(c => this._game.renderer.game.remove(c['debugLine']))
-        colliders && colliders.forEach(c => this.game.physicsEngine2d.world && c.body && Matter.World.remove(this.game.physicsEngine2d.world, c.body))
-        let index = this.game['_gameObjects'].indexOf(item)
-        this.game['_gameObjects'].splice(index, 1)
+        spr && spr.forEach(s => Game.renderer.game.remove(s.displayObject))
+        colliders && colliders.forEach(c => Game.renderer.game.remove(c['debugLine']))
+        colliders && colliders.forEach(c => Game.physicsEngine2d.world && c.body && Matter.World.remove(Game.physicsEngine2d.world, c.body))
+        let index = Game.gameObjects.indexOf(item)
+        Game.gameObjects.splice(index, 1)
       } else if (item instanceof Component) {
         let idx = item._components.indexOf(item)
         item._components.splice(idx, 1)

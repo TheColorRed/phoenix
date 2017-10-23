@@ -5,15 +5,15 @@ namespace Phoenix {
     public radius: number = 0.5
 
     public awake() {
-      if (this.settings.physics.enabled) {
+      if (Game.settings.physics.enabled) {
         this._body = Matter.Bodies.polygon(
-          this.transform.position.x * this.settings.game.units,
-          this.transform.position.y * this.settings.game.units,
+          this.transform.position.x * Game.settings.game.units,
+          this.transform.position.y * Game.settings.game.units,
           this.sides,
-          this.radius * this.settings.game.units * this.transform.scale,
-          this.bodySettings
+          this.radius * Game.settings.game.units * this.transform.scale,
+          (<any>window).deepmerge(this.bodySettings, { collider: 123 })
         )
-        Matter.World.add(this.game.physicsEngine2d.world, this._body)
+        Matter.World.add(Game.physicsEngine2d.world, this._body)
       }
     }
 

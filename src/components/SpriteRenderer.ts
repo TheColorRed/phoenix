@@ -12,10 +12,9 @@ namespace Phoenix {
 
     public awake() {
       if (this._sprite instanceof Sprite) {
-        this._sprite['_game'] = this.game
-        let asset = this.game.assets.getAssetByName<PIXI.Texture>(this._sprite.name, AssetType.Image)
+        let asset = Game.assets.getAssetByName<PIXI.Texture>(this._sprite.name, AssetType.Image)
         this._sprite.asset = asset
-        this.game.renderer.game.add(this.displayObject)
+        Game.renderer.game.add(this.displayObject)
       }
     }
 
@@ -24,8 +23,8 @@ namespace Phoenix {
     }
 
     public update() {
-      this.displayObject.x = this.transform.position.x * this.settings.game.units
-      this.displayObject.y = this.transform.position.y * this.settings.game.units
+      this.displayObject.x = this.transform.position.x * Game.settings.game.units
+      this.displayObject.y = this.transform.position.y * Game.settings.game.units
       this.displayObject.rotation = this.transform.rotation
       this.updateDebugBox()
     }
@@ -36,7 +35,7 @@ namespace Phoenix {
     private createDebugBox() {
       if (SpriteRenderer.debug) {
         this.debugLine = new PIXI.Graphics
-        this.game.renderer.debug.add(this.debugLine)
+        Game.renderer.debug.add(this.debugLine)
       }
     }
 
@@ -46,8 +45,8 @@ namespace Phoenix {
         this.debugLine.lineStyle(1, 0x00FFFF)
         let bounds = this.displayObject.getBounds()
         this.debugLine.drawRect(
-          this.transform.position.x * this.settings.game.units - (bounds.width / 2),
-          this.transform.position.y * this.settings.game.units - (bounds.height / 2),
+          this.transform.position.x * Game.settings.game.units - (bounds.width / 2),
+          this.transform.position.y * Game.settings.game.units - (bounds.height / 2),
           bounds.width,
           bounds.height
         )
@@ -58,8 +57,8 @@ namespace Phoenix {
     private drawDirectionIndicators() {
       if (SpriteRenderer.debug) {
         let bounds = this.displayObject.getBounds()
-        let x = this.transform.position.x * this.settings.game.units
-        let y = this.transform.position.y * this.settings.game.units
+        let x = this.transform.position.x * Game.settings.game.units
+        let y = this.transform.position.y * Game.settings.game.units
         this.debugLine.lineStyle(1, 0x00FFFF)
         this.debugLine.moveTo(x, y)
         this.debugLine.lineTo(

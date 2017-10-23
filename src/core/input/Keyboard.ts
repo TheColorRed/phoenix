@@ -3,9 +3,9 @@ namespace Phoenix {
 
     public static instance: Keyboard
 
-    public constructor(game: Game) {
+    public constructor() {
       if (Keyboard.instance) return
-      let canvas: HTMLCanvasElement = game.renderer.view
+      let canvas: HTMLCanvasElement = Game.renderer.view
       super()
       Keyboard.instance = this
       this._generateKeyMap()

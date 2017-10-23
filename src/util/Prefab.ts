@@ -1,6 +1,6 @@
 namespace Phoenix {
   export interface PrefabType<T extends Prefab> {
-    new(game: Game): T;
+    new(): T;
   }
 
   export abstract class Prefab {
@@ -10,9 +10,8 @@ namespace Phoenix {
 
     public abstract init(): void
 
-    public constructor(game: Game) {
+    public constructor() {
       this.gameObject = new GameObject
-      this.gameObject['_game'] = game
       this.transform = this.gameObject.transform
     }
 

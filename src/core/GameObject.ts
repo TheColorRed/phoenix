@@ -6,7 +6,6 @@ namespace Phoenix {
     public constructor() {
       super()
       this['_gameObject'] = this
-      this['_game'] = this.gameObject.game
       this['_transform'] = this.addComponent(Transform)
     }
 

@@ -18,7 +18,6 @@ namespace Phoenix {
     protected _name: string
     protected _sprite: PIXI.Sprite
     protected _asset: Asset<PIXI.Texture>
-    protected _game: Game
     protected _anchor: Vector2
     protected _rows: number = 1
     protected _cols: number = 1
