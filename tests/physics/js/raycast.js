@@ -9,7 +9,7 @@ game.preload(loader => {
   loader.loadImage('cat1', 'assets/dog.jpg')
 })
 
-game.start(() => {
+game.run(() => {
   Phoenix.Collider.debug = true
 
   // Add the bottom 2 floors
@@ -22,8 +22,7 @@ game.start(() => {
   // Add the items
   let ball = game.instantiate(Ball, new Phoenix.Vector2(8, 1))
   ball.addComponent(RaycastTest)
+
   game.instantiate(Polly, new Phoenix.Vector2(9, 1))
   game.instantiate(Polly, new Phoenix.Vector2(12, 7))
 })
-
-game.run()

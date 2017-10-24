@@ -82,8 +82,8 @@ namespace Phoenix {
 
     public addForce(amount: Vector2) {
       Matter.Body.applyForce(this.body,
-        { x: amount.x, y: amount.y },
-        { x: this.transform.position.x * Game.settings.game.units, y: this.transform.position.y * Game.settings.game.units }
+        { x: this.transform.position.x * Game.settings.game.units, y: this.transform.position.y * Game.settings.game.units },
+        { x: amount.x, y: amount.y }
       )
     }
 

@@ -10,8 +10,8 @@ namespace Phoenix {
 
     public abstract init(): void
 
-    public constructor() {
-      this.gameObject = new GameObject
+    public constructor(name?: string) {
+      this.gameObject = new GameObject(name)
       this.transform = this.gameObject.transform
     }
 

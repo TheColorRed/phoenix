@@ -6,11 +6,11 @@ const rename = require('gulp-rename')
 const concat = require('gulp-concat')
 
 const files = [
+  'dist/phoenix.js',
   'node_modules/pixi.js/dist/pixi.min.js',
   'node_modules/poly-decomp/build/decomp.min.js',
   'node_modules/matter-js/build/matter.min.js',
   'node_modules/deepmerge/dist/umd.js',
-  'dist/phoenix.js',
 ]
 
 gulp.task('build-ts', () => {
@@ -19,13 +19,13 @@ gulp.task('build-ts', () => {
 
   // Build the project
   let result = project.src()
-    // .pipe(sourcemaps.init())
+    .pipe(sourcemaps.init())
     .pipe(project())
 
   // Output the files
   result.dts.pipe(gulp.dest('dist'))
   return result.js
-    // .pipe(sourcemaps.write())
+    .pipe(sourcemaps.write('../phoenix.js.map'))
     .pipe(gulp.dest('dist'))
 })
 

@@ -58,31 +58,63 @@ namespace Phoenix {
       })
     }
 
-    public static raycastAll(origin: Vector2, end: Vector2): GameObject[] {
+    public static raycastAll(origin: Vector2, end: Vector2, excludeSelf: boolean = true): GameObject[] {
       let gameObjects: GameObject[] = []
       let bodies = Matter.Query.ray(Matter.Composite.allBodies(
         Game.physicsEngine2d.world),
         origin.times(Game.settings.game.units),
         end.times(Game.settings.game.units)
       )
-      bodies.forEach(b => {
-        let body: Matter.Body = b.body
-        let gameObjects = Game.gameObjects.filter(go => {
+      return this._gamesObjectFromBodies(bodies)
+    }
+
+    public static raycast(origin: Vector2, direction: Vector2, excludeSelf: boolean = true): GameObject | null {
+      let objs = this.raycastAll(origin, direction, excludeSelf)
+      return objs.length > 0 ? objs[0] : null
+    }
+
+    /**
+     * A rectangular area to check for existing bodies
+     *
+     * @static
+     * @param {Vector2} pointA Top left corner
+     * @param {Vector2} pointB Bottom right corner
+     * @memberof Physics2d
+     */
+    public static overlapAreaAll(pointA: Vector2, pointB: Vector2): GameObject[] {
+      pointA = pointA.times(Game.settings.game.units)
+      pointB = pointB.times(Game.settings.game.units)
+      let bodies = Matter.Query.region(
+        Matter.Composite.allBodies(Game.physicsEngine2d.world),
+        Matter.Bounds.create([
+          { x: pointA.x, y: pointA.y },
+          { x: pointA.x + pointB.x, y: pointA.y },
+          { x: pointA.x + pointB.x, y: pointA.y + pointB.y },
+          { x: pointA.x, y: pointA.y + pointB.y }
+        ])
+      )
+      return this._gamesObjectFromBodies(bodies)
+    }
+
+    public static overlapArea(pointA: Vector2, pointB: Vector2): GameObject | null {
+      let objs = this.overlapAreaAll(pointA, pointB)
+      return objs.length > 0 ? objs[0] : null
+    }
+
+    private static _gamesObjectFromBodies(bodies: any): GameObject[] {
+      let gameObjects: GameObject[] = []
+      bodies.forEach((b: any) => {
+        let body: Matter.Body = b.body || b
+        let foundgameObjects = Game.gameObjects.filter(go => {
           let colliders = go.getComponents(Collider)
           for (let collider of colliders) {
             if (collider.id == body.id) return true
           }
           return false
         })
-        gameObjects.push(...gameObjects)
+        gameObjects.push(...foundgameObjects)
       })
       return gameObjects
-    }
-
-    public static raycast(origin: Vector2, direction: Vector2): GameObject | null {
-      let gameObjects = this.raycastAll(origin, direction)
-      if (gameObjects.length > 0) return gameObjects[0]
-      return null
     }
   }
 }

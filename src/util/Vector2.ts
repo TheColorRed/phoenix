@@ -62,5 +62,9 @@ namespace Phoenix {
     public static get right(): Vector2 {
       return new Vector2(1, 0)
     }
+
+    public get down() {
+      return new Vector2(this.x, this.y + 1)
+    }
   }
 }

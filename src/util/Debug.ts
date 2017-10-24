@@ -12,5 +12,9 @@ namespace Phoenix {
       // TODO: Disable logging in production builds
       console.warn(message, ...params)
     }
+
+    public static debugLine(start: Vector2, end: Vector2) {
+
+    }
   }
 }

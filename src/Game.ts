@@ -13,13 +13,14 @@ namespace Phoenix {
 
   export class Game {
 
-    private _gameStarter: Function
+    // private _gameInit: Function
     private _gamePreloader: (loader: AssetManager) => void
     private static _renderer: Renderer
     private static _physics2d: Physics2d
     private static _settings: AppSettings
     private static _assetManager: AssetManager = new AssetManager
     private static _gameObjects: GameObject[] = []
+    private static _components: Component[] = []
     private static _gameTime: number = 0
     private static _startTime: number = 0
 
@@ -31,6 +32,7 @@ namespace Phoenix {
     public static get time(): number { return this._gameTime }
     public static get assets(): AssetManager { return this._assetManager }
     public static get gameObjects(): GameObject[] { return this._gameObjects }
+    public static get components(): Component[] { return this._components }
 
     public constructor(container: string | HTMLElement, width?: number, height?: number) {
       if (Game.instance) return
@@ -63,11 +65,11 @@ namespace Phoenix {
       this._gamePreloader = callback
     }
 
-    public start(callback: Function) {
-      this._gameStarter = callback
-    }
+    // public init(callback: Function) {
+    //   this._gameInit = callback
+    // }
 
-    public async run() {
+    public async run(callback: Function) {
       this.start2dPhysicsEngine()
       // this.loadImage('phoenix_particle', '../../images/Particle.png')
       // let loader = new Preloader
@@ -76,8 +78,8 @@ namespace Phoenix {
       }
       Game._assetManager['_load']()
       await this.loading()
-      if (typeof this._gameStarter == 'function') {
-        await this._gameStarter()
+      if (typeof callback == 'function') {
+        await callback()
       }
       Game._startTime = Date.now()
       setTimeout(this.mainLoop.bind(this))
@@ -109,61 +111,99 @@ namespace Phoenix {
         if (rotation && typeof rotation == 'number') {
           p.gameObject.transform.rotation = rotation
         }
-        Game._gameObjects.push(p.gameObject)
       }
       return p.gameObject
     }
 
     private mainLoop() {
       Game._gameTime = parseFloat(((Date.now() - Game._startTime) / 1000).toFixed(2))
-      for (let i = 0, l = Game._gameObjects.length; i < l; i++) {
-        let go = Game._gameObjects[i]
-        // Run the awake
-        for (let i = 0, l = go['_components'].length; i < l; i++) {
-          let c = go['_components'][i] as any
-          if (!c['awakeRan']) {
-            if (typeof c['awake'] == 'function') {
-              c['awake']()
-            }
-            c['awakeRan'] = true
-          }
-        }
-        // Run the start
-        for (let i = 0, l = go['_components'].length; i < l; i++) {
-          let c = go['_components'][i] as any
-          if (!c['startRan']) {
-            if (typeof c['start'] == 'function') {
-              c['start']()
-            }
-            c['startRan'] = true
-          }
-        }
-        // Run the update
-        for (let i = 0, l = go['_components'].length; i < l; i++) {
-          let c = go['_components'][i] as any
-          if (typeof c['update'] == 'function') {
-            c['update']()
-          }
-        }
-        // Run the lateUpdate
-        for (let i = 0, l = go['_components'].length; i < l; i++) {
-          let c = go['_components'][i] as any
-          if (typeof c['lateUpdate'] == 'function') {
-            c['lateUpdate']()
-          }
-        }
-      }
+      // Run the awake
+      this._awake()
+      // Run the start
+      this._start()
+      // Run the update
+      this._update()
+      // Run the lateUpdate
+      this._lateUpdate()
+      // Run the object destroyer
+      this._destroy()
+
       Keyboard.clear()
       Mouse.clear()
       setTimeout(this.mainLoop.bind(this))
     }
 
-    // public getAsset(key: string) {
-    //   for (let i = 0; i < this._assetManager.length; i++) {
-    //     if (this._assetManager[i].name == key) {
-    //       return this._assetManager[i]
-    //     }
-    //   }
-    // }
+    private _awake() {
+      for (let i = 0, l = Game._components.length; i < l; i++) {
+        let c = Game._components[i]
+        if (!c['awakeRan']) {
+          c.awake()
+          c['awakeRan'] = true
+        }
+      }
+    }
+
+    private _start() {
+      for (let i = 0, l = Game._components.length; i < l; i++) {
+        let c = Game._components[i]
+        if (!c['startRan']) {
+          c.start()
+          c['startRan'] = true
+        }
+      }
+    }
+
+    private _update() {
+      for (let i = 0, l = Game._components.length; i < l; i++) {
+        let c = Game._components[i]
+        if (c.gameObject.isActive && c['startRan'] && c['awakeRan']) {
+          c.update()
+        }
+      }
+    }
+
+    private _lateUpdate() {
+      for (let i = 0, l = Game._components.length; i < l; i++) {
+        let c = Game._components[i]
+        if (c.gameObject.isActive && c['startRan'] && c['awakeRan']) {
+          c.lateUpdate()
+        }
+      }
+    }
+
+    private _destroy() {
+      for (let i = 0, l = Game._gameObjects.length; i < l; i++) {
+        let item = Game._gameObjects[i]
+        // If the gameObject is marked for destruction, then destroy it
+        if (item.destroyMe) {
+          // Remove the sprite from pixi
+          let spr = item.getComponents(SpriteRenderer)
+          spr && spr.forEach(s => Game.renderer.game.remove(s.displayObject))
+          // Remove the bodies from the physics engine
+          // Remove the debug items from pixi
+          let colliders = item.getComponents(Collider)
+          colliders && colliders.forEach(c => Game.renderer.game.remove(c['debugLine']))
+          colliders && colliders.forEach(c => Game.physicsEngine2d.world && c.body && Matter.World.remove(Game.physicsEngine2d.world, c.body))
+          // Remove the gameObject's components from the cache
+          let components = Game.components.filter(comp => { return comp.gameObject == item.gameObject })
+          for (let i = 0, l = components.length; i < l; i++) {
+            let idx = Game.components.indexOf(Game.components[i])
+            idx > -1 && Game.components.splice(idx, 1)
+          }
+          // Remove the game object
+          let index = Game.gameObjects.indexOf(item)
+          Game.gameObjects.splice(index, 1)
+        }
+      }
+      for (let i = 0, l = Game._components.length; i < l; i++) {
+        let item = Game._components[i]
+        // If a component is marked for destruction, then destroy it
+        // This does not destroy the gameobject just the component
+        if (item.destroyMe) {
+          let idx = Game.components.indexOf(item)
+          idx > -1 && Game.components.splice(idx, 1)
+        }
+      }
+    }
   }
 }

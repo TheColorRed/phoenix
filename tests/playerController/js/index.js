@@ -8,7 +8,7 @@ game.preload(loader => {
   loader.loadImage('player', 'assets/player.png')
 })
 
-game.start(() => {
+game.run(() => {
 
   Phoenix.SpriteRenderer.debug = true
   Phoenix.Collider.debug = true
@@ -16,5 +16,3 @@ game.start(() => {
   game.instantiate(Player, new Phoenix.Vector2(3, 3))
   game.instantiate(Floor, new Phoenix.Vector2(10, 5))
 })
-
-game.run()
