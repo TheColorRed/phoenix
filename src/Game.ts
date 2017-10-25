@@ -92,7 +92,7 @@ namespace Phoenix {
             clearInterval(int)
             resolve()
           }
-        })
+        }, 0)
       })
     }
 
@@ -172,34 +172,37 @@ namespace Phoenix {
     }
 
     private _destroy() {
-      for (let i = 0, l = Game._gameObjects.length; i < l; i++) {
-        let item = Game._gameObjects[i]
+      let i = Game.gameObjects.length
+      while (i >= 0) {
+        // for (let i = 0, l = Game.gameObjects.length; i < l; i++) {
+        let item = Game.gameObjects[i]
         // If the gameObject is marked for destruction, then destroy it
-        if (item.destroyMe) {
+        if (item && item.destroyMe) {
           // Remove the sprite from pixi
           let spr = item.getComponents(SpriteRenderer)
           spr && spr.forEach(s => Game.renderer.game.remove(s.displayObject))
           // Remove the bodies from the physics engine
           // Remove the debug items from pixi
-          let colliders = item.getComponents(Collider)
-          colliders && colliders.forEach(c => Game.renderer.game.remove(c['debugLine']))
+          let colliders = item.getComponents(Collider2d)
+          colliders && colliders.forEach(c => Game.renderer.debug.remove(c['debugLine']))
           colliders && colliders.forEach(c => Game.physicsEngine2d.world && c.body && Matter.World.remove(Game.physicsEngine2d.world, c.body))
           // Remove the gameObject's components from the cache
-          let components = Game.components.filter(comp => { return comp.gameObject == item.gameObject })
+          let components = Game.components.filter(comp => comp.gameObject == item.gameObject)
           for (let i = 0, l = components.length; i < l; i++) {
             let idx = Game.components.indexOf(Game.components[i])
             idx > -1 && Game.components.splice(idx, 1)
           }
           // Remove the game object
           let index = Game.gameObjects.indexOf(item)
-          Game.gameObjects.splice(index, 1)
+          index > -1 && Game.gameObjects.splice(index, 1)
         }
+        i--
       }
       for (let i = 0, l = Game._components.length; i < l; i++) {
         let item = Game._components[i]
         // If a component is marked for destruction, then destroy it
         // This does not destroy the gameobject just the component
-        if (item.destroyMe) {
+        if (item && item.destroyMe) {
           let idx = Game.components.indexOf(item)
           idx > -1 && Game.components.splice(idx, 1)
         }

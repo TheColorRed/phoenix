@@ -79,7 +79,7 @@ namespace Phoenix {
       Game.components.push(c)
       // this.gameObject._components.push(c)
       if (!(c instanceof Transform)) {
-        if (!Game.settings.physics.enabled && c instanceof Collider) {
+        if (!Game.settings.physics.enabled && c instanceof Collider2d) {
           Debug.warning('You are adding a collider to a game without physics')
         }
       }
@@ -138,9 +138,13 @@ namespace Phoenix {
      * @param {number} [delay=0]
      * @memberof Object
      */
-    public destroy(item: any, delay: number = 0) {
+    public static destroy(item: any, delay: number = 0) {
       if (!item && !(item instanceof Object)) return
-      delay > 0 ? setTimeout(() => { this.markForDestruction() }, delay) : this.markForDestruction()
+      delay > 0 ? setTimeout(() => { item.markForDestruction() }, delay) : item.markForDestruction()
+    }
+
+    public destroy(delay: number = 0) {
+      delay > 0 ? setTimeout(() => { this.markForDestruction() }, delay * 1000) : this.markForDestruction()
     }
 
     private markForDestruction() {

@@ -32,27 +32,33 @@ namespace Phoenix {
       this.world.gravity.x = Game.settings.physics.gravity.x
       this.world.gravity.y = Game.settings.physics.gravity.y
       Matter.Engine.run(this._engine)
+      this.addCollisionStartEvent()
+    }
 
+    private addCollisionStartEvent() {
       Matter.Events.on(this._engine, 'collisionStart', e => {
         for (let item of e.source.pairs.list) {
           let aId: number = (<Matter.Body>item.bodyA).id
           let bId: number = (<Matter.Body>item.bodyB).id
           if (aId == bId) continue
-          let go = Game.gameObjects.find(go => {
-            let colliders = go.getComponents(Collider)
-            for (let c of colliders) {
-              if (c.id == bId && aId != c.id) {
-                return true
+          // Get the two collider components
+          let colliderA = Game.components.find(comp => comp instanceof Collider2d && comp.id == aId) as Collider2d
+          let colliderB = Game.components.find(comp => comp instanceof Collider2d && comp.id == bId) as Collider2d
+
+          // Call the function on each component that has 'onCollisionEnter2d' for colliderA
+          if (colliderA && colliderB) {
+            colliderA.gameObject.components.forEach(comp => {
+              if (typeof comp.onCollisionEnter2d == 'function') {
+                comp.onCollisionEnter2d(colliderB)
               }
-            }
-            return false
-          })
-          if (go) {
-            for (let comp of go.components) {
-              if (typeof (<any>comp)['onCollisionEnter'] == 'function') {
-                (<any>comp)['onCollisionEnter'](go)
+            })
+
+            // Call the function on each component that has 'onCollisionEnter2d' for colliderB
+            colliderB.gameObject.components.forEach(comp => {
+              if (typeof comp.onCollisionEnter2d == 'function') {
+                comp.onCollisionEnter2d(colliderA)
               }
-            }
+            })
           }
         }
       })
@@ -106,7 +112,7 @@ namespace Phoenix {
       bodies.forEach((b: any) => {
         let body: Matter.Body = b.body || b
         let foundgameObjects = Game.gameObjects.filter(go => {
-          let colliders = go.getComponents(Collider)
+          let colliders = go.getComponents(Collider2d)
           for (let collider of colliders) {
             if (collider.id == body.id) return true
           }

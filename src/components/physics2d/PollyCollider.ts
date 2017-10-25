@@ -1,5 +1,5 @@
 namespace Phoenix {
-  export class PollyCollider extends Collider {
+  export class PollyCollider extends Collider2d {
 
     public sides: number = 5
     public radius: number = 0.5

@@ -1,5 +1,5 @@
 namespace Phoenix {
-  export class FreeFormCollider extends Collider {
+  export class FreeFormCollider extends Collider2d {
 
     public verticies: Vector2[] = []
 

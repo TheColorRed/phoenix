@@ -11,7 +11,7 @@ game.preload(loader => {
 game.run(() => {
 
   Phoenix.SpriteRenderer.debug = true
-  Phoenix.Collider.debug = true
+  Phoenix.Collider2d.debug = true
 
   game.instantiate(Player, new Phoenix.Vector2(3, 3))
   game.instantiate(Floor, new Phoenix.Vector2(10, 5))

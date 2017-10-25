@@ -20,6 +20,12 @@
         "poly-decomp": "^0.2.1"
     },
     "devDependencies": {
+        "@types/gulp": "^4.0.4",
+        "@types/gulp-concat": "0.0.31",
+        "@types/gulp-rename": "0.0.32",
+        "@types/gulp-sourcemaps": "0.0.31",
+        "@types/gulp-typescript": "^2.13.0",
+        "@types/watch": "^1.0.0",
         "concat": "^1.0.3",
         "gulp": "^3.9.1",
         "gulp-concat": "^2.6.1",

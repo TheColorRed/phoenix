@@ -10,7 +10,7 @@ game.preload(loader => {
 })
 
 game.run(() => {
-  Phoenix.Collider.debug = true
+  Phoenix.Collider2d.debug = true
 
   // Add the bottom 2 floors
   let floor1 = game.instantiate(Floor, new Phoenix.Vector2(10.3, 10))

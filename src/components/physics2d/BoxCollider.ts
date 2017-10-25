@@ -1,5 +1,5 @@
 namespace Phoenix {
-  export class BoxCollider extends Collider {
+  export class BoxCollider extends Collider2d {
 
     public width: number = 1
     public height: number = 1

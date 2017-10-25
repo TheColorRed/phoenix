@@ -17,11 +17,11 @@ namespace Phoenix {
     public speed: number = 0.02
     public jumpForce: number = 0.05
 
-    private _collider: Collider | null
+    private _collider: Collider2d | null
     private _jumping: boolean = false
 
     public start() {
-      this._collider = this.getComponent(Collider)
+      this._collider = this.getComponent(Collider2d)
       if (this._collider) {
         Matter.Body.setInertia(this._collider.body, Infinity)
       }

@@ -1,5 +1,5 @@
 namespace Phoenix {
-  export class Collider extends Component {
+  export class Collider2d extends Component {
 
     public static debug: boolean = false
 
@@ -91,14 +91,14 @@ namespace Phoenix {
     // Begin Debugging
     ////////////////////////////////////////////////////////////////////////////
     private createDebugBox() {
-      if (Collider.debug) {
+      if (Collider2d.debug) {
         this.debugLine = new PIXI.Graphics
         Game.renderer.debug.add(this.debugLine)
       }
     }
 
     private updateDebugBox() {
-      if (Collider.debug) {
+      if (Collider2d.debug) {
         this.debugLine.clear()
         this.debugLine.lineStyle(1, 0x00FF00)
         if (this instanceof CircleCollider) {
@@ -122,7 +122,7 @@ namespace Phoenix {
     }
 
     private drawDirectionIndicators() {
-      if (Collider.debug) {
+      if (Collider2d.debug) {
         this.debugLine.lineStyle(1, 0x00FF00)
         let x = this.body.position.x
         let y = this.body.position.y

@@ -19,9 +19,9 @@ namespace Phoenix {
       return this.gameObject.addComponent(component)
     }
 
-    protected destroy(item: Object, delay: number = 0) {
-      this.gameObject.destroy(item, delay)
-    }
+    // protected destroy(item: Object, delay: number = 0) {
+    //   this.gameObject.destroy(delay)
+    // }
 
     protected instantiate<T extends Prefab>(prefab: PrefabType<T>, position?: Vector2, rotation?: number): GameObject | null {
       return this.gameObject.instantiate(prefab, position, rotation)

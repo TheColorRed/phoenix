@@ -13,6 +13,7 @@ namespace Phoenix {
     public start(): void { }
     public update(): void { }
     public lateUpdate(): void { }
+    public onCollisionEnter2d(other: Collider2d): void { }
 
     /**
      * Creates an instance of Component

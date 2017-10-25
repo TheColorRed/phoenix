@@ -1,5 +1,5 @@
 namespace Phoenix {
-  export class CapsuleCollider extends Collider {
+  export class CapsuleCollider extends Collider2d {
 
     public width: number = 1
     public height: number = 1

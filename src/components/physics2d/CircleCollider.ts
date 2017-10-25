@@ -1,5 +1,5 @@
 namespace Phoenix {
-  export class CircleCollider extends Collider {
+  export class CircleCollider extends Collider2d {
 
     public radius: number = 0.5
 

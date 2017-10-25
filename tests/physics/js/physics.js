@@ -8,8 +8,15 @@ game.preload(loader => {
   loader.loadImage('cat1', 'assets/dog.jpg')
 })
 
+class BallGroundCollide extends Phoenix.Component {
+  onCollisionEnter2d(other) {
+    Phoenix.Object.destroy(other)
+  }
+}
+
+
 game.run(() => {
-  Phoenix.Collider.debug = true
+  Phoenix.Collider2d.debug = true
 
   // Add the bottom 2 floors
   let floor1 = game.instantiate(Floor, new Phoenix.Vector2(10.3, 10))
@@ -25,8 +32,12 @@ game.run(() => {
   c2.width = 10
 
   // Add the items
-  game.instantiate(Ball, new Phoenix.Vector2(8, 1)).getComponent(Phoenix.Collider).bounciness = 0.9
-  game.instantiate(Polly, new Phoenix.Vector2(9, 1)).getComponent(Phoenix.Collider).bounciness = 0.8
+  let ball = game.instantiate(Ball, new Phoenix.Vector2(8, 1))
+  ball.getComponent(Phoenix.Collider2d).bounciness = 0.9
+  ball.tag = 'ball'
+  ball.addComponent(BallGroundCollide)
+
+  game.instantiate(Polly, new Phoenix.Vector2(9, 1)).getComponent(Phoenix.Collider2d).bounciness = 0.8
   game.instantiate(Polly, new Phoenix.Vector2(12, 7))
 
 })
