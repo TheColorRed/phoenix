@@ -134,21 +134,35 @@ namespace Phoenix {
     /**
      * Destroys an Object
      *
-     * @param {*} item
-     * @param {number} [delay=0]
+     * @param {*} item The Object to destory
+     * @param {number} [delay=0] The time in seconds to delay
      * @memberof Object
      */
     public static destroy(item: any, delay: number = 0) {
       if (!item && !(item instanceof Object)) return
-      delay > 0 ? setTimeout(() => { item.markForDestruction() }, delay) : item.markForDestruction()
+      delay > 0 ? setTimeout(() => { this._applyDeletion(item) }, delay * 1000) : this._applyDeletion(item)
     }
 
+    /**
+     * Destroy the current Object
+     *
+     * @param {number} [delay=0] The time in seconds to delay
+     * @memberof Object
+     */
     public destroy(delay: number = 0) {
-      delay > 0 ? setTimeout(() => { this.markForDestruction() }, delay * 1000) : this.markForDestruction()
+      Object.destroy(this, delay)
     }
 
     private markForDestruction() {
       this.destroyMe = true
+    }
+
+    private static _applyDeletion(item: Object) {
+      // If the item is a gameObject the components also need to be marked for deletion
+      if (item instanceof GameObject) {
+        Game.components.filter(comp => comp.gameObject == item).forEach(comp => comp.destroy())
+      }
+      item.markForDestruction()
     }
   }
 }
